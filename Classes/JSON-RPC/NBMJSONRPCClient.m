@@ -586,9 +586,9 @@ static NSTimeInterval kRequestMaxRetries = 3;
         NSError *timeoutError = [NBMJSONRPCClientError errorWithCode:NBMJSONRPCClientInitializationErrorCode message:msg underlyingError:error];
         error = timeoutError;
     } 
-//    if ([self.delegate respondsToSelector:@selector(client:didFailWithError:)]) {
-//        [self.delegate client:self didFailWithError:error];
-//    }
+    if ([self.delegate respondsToSelector:@selector(client:didFailWithError:)]) {
+        [self.delegate client:self didFailWithError:error];
+    }
 }
 
 #pragma mark TimeoutableDelegate

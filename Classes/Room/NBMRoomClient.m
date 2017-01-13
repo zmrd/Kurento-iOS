@@ -383,7 +383,7 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
                     NSString *peerId = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerIdParam ofClass:[NSString class] error:error];
                     if (peerId) {
                         NBMPeer *peer = [[NBMPeer alloc] initWithId:peerId];
-                        NSArray *jsonStreams = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerStreamsParam ofClass:[NSArray class] error:error];
+                        NSArray *jsonStreams = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerStreamsParam ofClass:[NSArray class] allowNil:YES error:error];
                         for (NSDictionary *jsonStream in jsonStreams) {
                             NSString *streamId = [NBMRoomClient element:jsonStream getPropertyWithName:kJoinRoomPeerStramIdParam ofClass:[NSString class] error:error];
                             [peer addStream:streamId];
@@ -767,6 +767,8 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
         if (!allowNil) {
             NSString *msg = [NSString stringWithFormat:@"Invalid method lacking parameter %@", name];
             *error = [NBMRoomError errorWithCode:NBMTransportErrorRoomErrorCode message:msg];
+            return nil;
+        } else {
             return nil;
         }
     }
