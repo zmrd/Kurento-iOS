@@ -868,11 +868,27 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
 #pragma mark - Parsing helpers
 
 + (void)assignElementProperties:(id)element toPeer:(NBMPeer*)peer {
-    peer.firstName = [NBMRoomClient element:element getPropertyWithName:kUserFirstnameParam ofClass:[NSString class] error:nil];
-    peer.profilePicURL = [NBMRoomClient element:element getPropertyWithName:kUserProfilePictureURL ofClass:[NSString class] error:nil];
-    peer.country = [NBMRoomClient element:element getPropertyWithName:kUserCountry ofClass:[NSString class] error:nil];
-    peer.town = [NBMRoomClient element:element getPropertyWithName:kUserTown ofClass:[NSString class] error:nil];
-    peer.age = [NBMRoomClient element:element getPropertyWithName:kUserAge ofClass:[NSString class] error:nil];
+    NSError* error = nil;
+    peer.firstName = [NBMRoomClient element:element getPropertyWithName:kUserFirstnameParam ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.profilePicURL = [NBMRoomClient element:element getPropertyWithName:kUserProfilePictureURL ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.country = [NBMRoomClient element:element getPropertyWithName:kUserCountry ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.town = [NBMRoomClient element:element getPropertyWithName:kUserTown ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.age = [NBMRoomClient element:element getPropertyWithName:kUserAge ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
 }
 
 @end
