@@ -22,7 +22,15 @@
 @property (nonatomic, copy) NSString *identifier;
 @property (nonatomic, strong, readonly) NSSet *streams;
 
+@property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *profilePicURL;
+@property (nonatomic, strong) NSString *country;
+@property (nonatomic, strong) NSString *town;
+@property (nonatomic, strong) NSString *age;
+
 - (instancetype)initWithId:(NSString *)peerId;
+
+- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge;
 
 - (void)addStream:(NSString *)streamId;
 - (void)removeStream:(NSString *)streamId;

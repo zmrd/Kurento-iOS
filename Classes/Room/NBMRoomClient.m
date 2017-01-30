@@ -44,6 +44,13 @@ static NSString* const kSendMessageMessageParam = @"message";
 //Leave Room
 static NSString* const kLeaveRoomMethod = @"leaveRoom";
 
+//Re-usable other user params
+static NSString* const kUserFirstnameParam = @"firstName";
+static NSString* const kUserProfilePictureURL = @"profilePicUrl";
+static NSString* const kUserCountry = @"country";
+static NSString* const kUserTown = @"town";
+static NSString* const kUserAge = @"age";
+
 //Join Room
 static NSString* const kJoinRoomMethod = @"joinRoom";
 static NSString* const kJoinRoomUserParam = @"user";
@@ -350,6 +357,11 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     [self.jsonRpcClient sendRequestWithMethod:kJoinRoomMethod
                                    parameters:@{kJoinRoomParam: roomName ?: @"",
                                                 kJoinRoomUserParam: username ?: @"",
+                                                kUserFirstnameParam: self.room.localPeer.firstName,
+                                                kUserProfilePictureURL: self.room.localPeer.profilePicURL,
+                                                kUserCountry: self.room.localPeer.country,
+                                                kUserTown: self.room.localPeer.town,
+                                                kUserAge: self.room.localPeer.age,
                                                 kJoinDataChannelsParam: dataChannels ? @YES : @NO}
                                    completion:^(NBMResponse *response) {
                                        NSError *error;
@@ -383,6 +395,7 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
                     NSString *peerId = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerIdParam ofClass:[NSString class] error:error];
                     if (peerId) {
                         NBMPeer *peer = [[NBMPeer alloc] initWithId:peerId];
+                        [NBMRoomClient assignElementProperties:jsonPeer toPeer:peer];
                         NSArray *jsonStreams = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerStreamsParam ofClass:[NSArray class] allowNil:YES error:error];
                         for (NSDictionary *jsonStream in jsonStreams) {
                             NSString *streamId = [NBMRoomClient element:jsonStream getPropertyWithName:kJoinRoomPeerStramIdParam ofClass:[NSString class] error:error];
@@ -634,6 +647,7 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     NSString *peerId = [NBMRoomClient element:params getStringPropertyWithName:kParticipantJoinedUserParam error:&error];
     //NBMPeer *peer = [self peerWithIdentifier:peerId];
     NBMPeer *peer = [[NBMPeer alloc] initWithId:peerId];
+    [NBMRoomClient assignElementProperties:params toPeer:peer];
     [self.mutableRoomPeers setObject:peer forKey:peerId];
     if ([self.delegate respondsToSelector:@selector(client:participantJoined:)]) {
         [self.delegate client:self participantJoined:peer];
@@ -849,6 +863,16 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     if ([self.delegate respondsToSelector:@selector(client:didFailWithError:)]) {
         [self.delegate client:self didFailWithError:error];
     }
+}
+
+#pragma mark - Parsing helpers
+
++ (void)assignElementProperties:(id)element toPeer:(NBMPeer*)peer {
+    peer.firstName = [NBMRoomClient element:element getPropertyWithName:kUserFirstnameParam ofClass:[NSString class] error:nil];
+    peer.profilePicURL = [NBMRoomClient element:element getPropertyWithName:kUserProfilePictureURL ofClass:[NSString class] error:nil];
+    peer.country = [NBMRoomClient element:element getPropertyWithName:kUserCountry ofClass:[NSString class] error:nil];
+    peer.town = [NBMRoomClient element:element getPropertyWithName:kUserTown ofClass:[NSString class] error:nil];
+    peer.age = [NBMRoomClient element:element getPropertyWithName:kUserAge ofClass:[NSString class] error:nil];
 }
 
 @end

@@ -34,6 +34,20 @@
     return self;
 }
 
+- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge {
+    self = [super init];
+    if (self) {
+        _identifier = peerId;
+        _firstName = peerFirstName;
+        _profilePicURL = peerProfileURL;
+        _country = peerCountry;
+        _town = peerTown;
+        _age = peerAge;
+        _mutableStreams = [NSMutableSet set];
+    }
+    return self;
+}
+
 - (void)addStream:(NSString *)streamId {
     if (streamId) {
         [self.mutableStreams addObject:streamId];
