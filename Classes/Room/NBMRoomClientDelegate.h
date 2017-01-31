@@ -56,6 +56,7 @@
 - (void)client:(NBMRoomClient *)client didReceiveICECandidate:(RTCIceCandidate *)candidate fromParticipant:(NBMPeer *)peer;
 
 - (void)client:(NBMRoomClient *)client didReceiveMessage:(NSString *)message fromParticipant:(NBMPeer *)peer;
+- (void)client:(NBMRoomClient *)client didReceiveCustomRequest:(NSDictionary *)params;
 - (void)client:(NBMRoomClient *)client mediaErrorOccurred:(NSError *)error;
 - (void)client:(NBMRoomClient *)client roomWasClosed:(NBMRoom *)room;
 

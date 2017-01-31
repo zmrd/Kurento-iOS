@@ -634,6 +634,9 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
        kParticipantSendMessageMethod : ^{
         [self messageReceived:event.parameters];
     },
+       kCustomRequestMethod : ^{
+        [self customRequestReceived:event.parameters];
+    },
        kRoomClosedMethod : ^{
         [self roomWasClosed];
     }
@@ -738,6 +741,12 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     NSError *mediaError = [NBMRoomError errorWithCode:NBMRoomGenericErrorRoomErrorCode message:errorMsg];
     if ([self.delegate respondsToSelector:@selector(client:mediaErrorOccurred:)]) {
         [self.delegate client:self mediaErrorOccurred:mediaError];
+    }
+}
+
+- (void) customRequestReceived:(id)params {
+    if ([self.delegate respondsToSelector:@selector(client:didReceiveCustomRequest:)]) {
+        [self.delegate client:self didReceiveCustomRequest:params];
     }
 }
 
