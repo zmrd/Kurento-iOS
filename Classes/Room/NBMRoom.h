@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, NBMRoomErrorCode) {
 
 @interface NBMRoom : NSObject
 
-- (instancetype)initWithUsername:(NSString *)username firstName:(NSString*)firstName profilePicURL:(NSString*)profileURL country:(NSString*) country town:(NSString*) town age:(NSString*)age roomName:(NSString *)name roomURL:(NSURL *)url dataChannels:(BOOL)dataChannels;
+- (instancetype)initWithUsername:(NSString *)username firstName:(NSString*)firstName profilePicURL:(NSString*)profileURL country:(NSString*) country town:(NSString*) town age:(NSString*)age emojis:(NSArray*)emojis roomName:(NSString *)name roomURL:(NSURL *)url dataChannels:(BOOL)dataChannels;
 
 @property (nonatomic, copy, readonly) NSString *name;
 @property (nonatomic, strong, readonly) NSURL *url;

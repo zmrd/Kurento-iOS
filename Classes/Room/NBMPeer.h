@@ -27,10 +27,11 @@
 @property (nonatomic, strong) NSString *country;
 @property (nonatomic, strong) NSString *town;
 @property (nonatomic, strong) NSString *age;
+@property (nonatomic, strong) NSArray* emojis;
 
 - (instancetype)initWithId:(NSString *)peerId;
 
-- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge;
+- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge emojis:(NSArray*)emojis;
 
 - (void)addStream:(NSString *)streamId;
 - (void)removeStream:(NSString *)streamId;

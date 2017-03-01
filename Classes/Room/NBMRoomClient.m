@@ -50,6 +50,7 @@ static NSString* const kUserProfilePictureURL = @"profilePicUrl";
 static NSString* const kUserCountry = @"country";
 static NSString* const kUserTown = @"town";
 static NSString* const kUserAge = @"age";
+static NSString* const kUserEmojis = @"emojis";
 
 //Join Room
 static NSString* const kJoinRoomMethod = @"joinRoom";
@@ -362,6 +363,7 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
                                                 kUserCountry: self.room.localPeer.country,
                                                 kUserTown: self.room.localPeer.town,
                                                 kUserAge: self.room.localPeer.age,
+                                                kUserEmojis: self.room.localPeer.emojis,
                                                 kJoinDataChannelsParam: dataChannels ? @YES : @NO}
                                    completion:^(NBMResponse *response) {
                                        NSError *error;
@@ -895,6 +897,10 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
     peer.age = [NBMRoomClient element:element getPropertyWithName:kUserAge ofClass:[NSString class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.emojis = [NBMRoomClient element:element getPropertyWithName:kUserEmojis ofClass:[NSArray class] error:&error];
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }

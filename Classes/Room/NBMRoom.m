@@ -26,7 +26,7 @@
 
 @implementation NBMRoom
 
-- (instancetype)initWithUsername:(NSString *)username firstName:(NSString*)firstName profilePicURL:(NSString*)profileURL country:(NSString*) country town:(NSString*) town age:(NSString*)age roomName:(NSString *)name roomURL:(NSURL *)url dataChannels:(BOOL)dataChannels {
+- (instancetype)initWithUsername:(NSString *)username firstName:(NSString*)firstName profilePicURL:(NSString*)profileURL country:(NSString*) country town:(NSString*) town age:(NSString*)age emojis:(NSArray*)emojis roomName:(NSString *)name roomURL:(NSURL *)url dataChannels:(BOOL)dataChannels {
     NSParameterAssert(username);
     NSParameterAssert(name);
     NSParameterAssert(url);
@@ -34,7 +34,7 @@
     self = [super init];
     if (self) {
         _mutablePeers = [NSMutableSet set];
-        _localPeer = [[NBMPeer alloc] initWithId:username firstName:firstName profileURL:profileURL country:country town:town age:age];
+        _localPeer = [[NBMPeer alloc] initWithId:username firstName:firstName profileURL:profileURL country:country town:town age:age emojis:emojis];
         _name = name;
         _url = url;
         _dataChannels = dataChannels;

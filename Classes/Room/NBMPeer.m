@@ -34,7 +34,7 @@
     return self;
 }
 
-- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge {
+- (instancetype)initWithId:(NSString *)peerId firstName:(NSString*)peerFirstName profileURL:(NSString*)peerProfileURL country:(NSString*)peerCountry town:(NSString*)peerTown age:(NSString*)peerAge emojis:(NSArray*) emojis {
     self = [super init];
     if (self) {
         _identifier = peerId;
@@ -43,6 +43,7 @@
         _country = peerCountry;
         _town = peerTown;
         _age = peerAge;
+        _emojis = emojis;
         _mutableStreams = [NSMutableSet set];
     }
     return self;
