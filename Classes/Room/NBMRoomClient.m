@@ -51,10 +51,14 @@ static NSString* const kUserCountry = @"country";
 static NSString* const kUserTown = @"town";
 static NSString* const kUserAge = @"age";
 static NSString* const kUserEmojis = @"emojis";
+static NSString* const kUserBan = @"ban";
+static NSString* const kUserTimeout = @"timeout";
 
 //Join Room
+static NSString* const kJoinRoomApiVersion = @"version";
 static NSString* const kJoinRoomMethod = @"joinRoom";
 static NSString* const kJoinRoomUserParam = @"user";
+static NSString* const kJoinRoomParticipantsParam = @"participants";
 static NSString* const kJoinRoomParam = @"room";
 static NSString* const kJoinDataChannelsParam = @"dataChannels";
 static NSString* const kJoinRoomPeerIdParam = @"id";
@@ -356,7 +360,8 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
 
 - (void)nbm_joinRoom:(NSString *)roomName username:(NSString *)username dataChannels:(BOOL)dataChannels completion:(JoinRoomBlock)block {
     [self.jsonRpcClient sendRequestWithMethod:kJoinRoomMethod
-                                   parameters:@{kJoinRoomParam: roomName ?: @"",
+                                   parameters:@{kJoinRoomApiVersion: self.apiVersion ? self.apiVersion : @"1",
+                                                kJoinRoomParam: roomName ?: @"",
                                                 kJoinRoomUserParam: username ?: @"",
                                                 kUserFirstnameParam: self.room.localPeer.firstName,
                                                 kUserProfilePictureURL: self.room.localPeer.profilePicURL,
@@ -384,31 +389,34 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     NSMutableDictionary *peers;
     id result = response.result;
     if (result) {
-        id value = [NBMRoomClient element:result getPropertyWithName:@"value" ofClass:[NSArray class] error:error];
-        if (!*error) {
-            peers = [NSMutableDictionary dictionary];
-            NSArray *jsonPeers = (NSArray *)value;
-            if ([jsonPeers count] > 0) {
-                for (NSDictionary* jsonPeer in jsonPeers) {
-                    if (*error) {
-                        return nil;
-                        break;
+        peers = [NSMutableDictionary dictionary];
+        //First, getting self ban properties
+        NBMPeer *selfPeer = self.room.localPeer;
+        NSNumber *banTimestamp = [NBMRoomClient element:result getPropertyWithName:kUserBan ofClass:[NSNumber class] allowNil:YES error:error];
+        NSNumber *timeoutTimestamp = [NBMRoomClient element:result getPropertyWithName:kUserTimeout ofClass:[NSNumber class] allowNil:YES error:error];
+        selfPeer.ban = banTimestamp;
+        selfPeer.timeout = timeoutTimestamp;
+        NSArray *jsonPeers = [NBMRoomClient element:result getPropertyWithName:kJoinRoomParticipantsParam ofClass:[NSArray class] error:error];
+        if ([jsonPeers count] > 0) {
+            for (NSDictionary* jsonPeer in jsonPeers) {
+                if (*error) {
+                    return nil;
+                    break;
+                }
+                NSString *peerId = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerIdParam ofClass:[NSString class] error:error];
+                if (peerId) {
+                    NBMPeer *peer = [[NBMPeer alloc] initWithId:peerId];
+                    [NBMRoomClient assignElementProperties:jsonPeer toPeer:peer];
+                    NSArray *jsonStreams = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerStreamsParam ofClass:[NSArray class] allowNil:YES error:error];
+                    for (NSDictionary *jsonStream in jsonStreams) {
+                        NSString *streamId = [NBMRoomClient element:jsonStream getPropertyWithName:kJoinRoomPeerStramIdParam ofClass:[NSString class] error:error];
+                        [peer addStream:streamId];
                     }
-                    NSString *peerId = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerIdParam ofClass:[NSString class] error:error];
-                    if (peerId) {
-                        NBMPeer *peer = [[NBMPeer alloc] initWithId:peerId];
-                        [NBMRoomClient assignElementProperties:jsonPeer toPeer:peer];
-                        NSArray *jsonStreams = [NBMRoomClient element:jsonPeer getPropertyWithName:kJoinRoomPeerStreamsParam ofClass:[NSArray class] allowNil:YES error:error];
-                        for (NSDictionary *jsonStream in jsonStreams) {
-                            NSString *streamId = [NBMRoomClient element:jsonStream getPropertyWithName:kJoinRoomPeerStramIdParam ofClass:[NSString class] error:error];
-                            [peer addStream:streamId];
-                        }
-                        [peers setObject:peer forKey:peerId];
-                    }
+                    [peers setObject:peer forKey:peerId];
                 }
             }
-            self.mutableRoomPeers = peers;
         }
+        self.mutableRoomPeers = peers;
     }
     else {
         *error = [NBMRoomClient errorFromResponse:response];
@@ -901,6 +909,14 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
     peer.emojis = [NBMRoomClient element:element getPropertyWithName:kUserEmojis ofClass:[NSArray class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.ban = [NBMRoomClient element:element getPropertyWithName:kUserBan ofClass:[NSNumber class] error:&error];
+    if (error != nil) {
+        DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
+    }
+    peer.timeout = [NBMRoomClient element:element getPropertyWithName:kUserTimeout ofClass:[NSNumber class] error:&error];
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }

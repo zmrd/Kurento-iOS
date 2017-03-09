@@ -54,6 +54,12 @@ typedef NS_ENUM(NSInteger, NBMRoomClientConnectionState) {
 @interface NBMRoomClient : NSObject
 
 /**
+ *  The Kurento Room API version. -Added by David Attias/Yellow
+ *  This is currently used only in join request.
+ */
+@property (nonatomic, assign) NSString* apiVersion;
+
+/**
  *  The delegate object for the client.
  */
 @property (nonatomic, weak) id<NBMRoomClientDelegate> delegate;

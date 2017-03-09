@@ -28,6 +28,8 @@
 @property (nonatomic, strong) NSString *town;
 @property (nonatomic, strong) NSString *age;
 @property (nonatomic, strong) NSArray* emojis;
+@property (nonatomic, strong) NSNumber* timeout;
+@property (nonatomic, strong) NSNumber* ban;
 
 - (instancetype)initWithId:(NSString *)peerId;
 
