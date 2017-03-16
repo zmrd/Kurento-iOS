@@ -908,15 +908,15 @@ static NSTimeInterval kRoomClientTimeoutInterval = 5;
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
-    peer.emojis = [NBMRoomClient element:element getPropertyWithName:kUserEmojis ofClass:[NSArray class] error:&error];
+    peer.emojis = [NBMRoomClient element:element getPropertyWithName:kUserEmojis ofClass:[NSArray class] allowNil:true error:&error];
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
-    peer.ban = [NBMRoomClient element:element getPropertyWithName:kUserBan ofClass:[NSNumber class] error:&error];
+    peer.ban = [NBMRoomClient element:element getPropertyWithName:kUserBan ofClass:[NSNumber class] allowNil:true error:&error];
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
-    peer.timeout = [NBMRoomClient element:element getPropertyWithName:kUserTimeout ofClass:[NSNumber class] error:&error];
+    peer.timeout = [NBMRoomClient element:element getPropertyWithName:kUserTimeout ofClass:[NSNumber class] allowNil:true error:&error];
     if (error != nil) {
         DDLogError(@"Failed to parse Kurento peer property: %@", error.description);
     }
