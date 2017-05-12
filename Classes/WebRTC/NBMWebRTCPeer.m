@@ -248,12 +248,10 @@ didReceiveMessageWithBuffer:(RTCDataBuffer *)buffer {
 - (void)selectCameraPosition:(NBMCameraPosition)cameraPosition {
     if (self.cameraPosition != cameraPosition) {
         self.cameraPosition = cameraPosition;
-        [self setupLocalVideo];
-        RTCPeerConnection *localPeerConnection = self.localPeerConnection.peerConnection;
-        if (localPeerConnection) {
-            RTCMediaStream *oldLocalStream = [localPeerConnection.localStreams firstObject];
-            [localPeerConnection removeStream:oldLocalStream];
-            [localPeerConnection addStream:self.localStream];
+        RTCVideoSource* source = self.localStream.videoTracks.firstObject.source;
+        if ([source isKindOfClass:[RTCAVFoundationVideoSource class]]) {
+            RTCAVFoundationVideoSource* avSource = (RTCAVFoundationVideoSource*)source;
+            avSource.useBackCamera = self.cameraPosition == NBMCameraPositionBack;
         }
     }
 }
