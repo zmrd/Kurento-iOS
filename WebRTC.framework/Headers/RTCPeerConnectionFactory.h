@@ -85,6 +85,9 @@ RTC_EXPORT
 + (void) setOnAudioBufferAvailableBlock:(void (^)(AudioBufferList *, AudioTimeStamp*))onNewAudioBufferAvailable;
 + (void) onAudioBufferAvailable:(AudioBufferList*)audioBuffer withTimestamp:(AudioTimeStamp*)timestamp;
 
++ (void) setOnLocalAudioBufferAvailableBlock:(void (^)(AudioBufferList *, AudioTimeStamp*))onNewAudioBufferAvailable;
++ (void) onLocalAudioBufferAvailable:(AudioBufferList*)audioBuffer withTimestamp:(AudioTimeStamp*)timestamp;
+
 @end
 
 NS_ASSUME_NONNULL_END
