@@ -118,16 +118,9 @@ static NSString *kDefaultSTUNServerUrl = @"stun:stun.l.google.com:19302";
 
 - (void)generateOffer:(NSString *)connectionId withDataChannels:(BOOL)dataChannels {
     NSParameterAssert(connectionId);
-    
-//    if (!self.localStream) {
-//        [self startLocalMedia];
-//    }
-   
+
     NBMPeerConnection *connection = self.connectionMap[connectionId];
-//    if (connection) {
-//        DDLogWarn(@"Connection already exixts - id: %@", connectionId);
-//        return;
-//    }
+
     if (!connection) {
         connection = [self connectionWrapperWithConnectionId:connectionId servers:_iceServers];
     }
@@ -389,6 +382,43 @@ didReceiveMessageWithBuffer:(RTCDataBuffer *)buffer {
 
 - (NSString *)videoTrackId {
     return [[self localStreamLabel] stringByAppendingString:@"v0"];
+}
+
+- (BOOL)startMedia
+{
+    RTCMediaStream *localMediaStream = [_peerConnectionFactory mediaStreamWithStreamId:[self localStreamLabel]];
+    self.localStream = localMediaStream;
+
+    //Audio setup
+    BOOL audioEnabled = NO;
+    AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    if (audioAuthStatus == AVAuthorizationStatusAuthorized || audioAuthStatus == AVAuthorizationStatusNotDetermined) {
+        audioEnabled = YES;
+        [self setupLocalAudio];
+    }
+    [self setupMedia];
+
+    return audioEnabled;
+}
+
+- (void)setupMedia
+{
+    RTCVideoTrack *videoTrack = [self localVideoTrack];
+    if (self.localStream && videoTrack) {
+        RTCVideoTrack *oldVideoTrack = [self.localStream.videoTracks firstObject];
+        if (oldVideoTrack) {
+            [self.localStream removeVideoTrack:oldVideoTrack];
+        }
+        [self.localStream addVideoTrack:videoTrack];
+    }
+}
+
+- (RTCVideoTrack *)localVideoTrack {
+
+    RTCVideoSource* videoSource = [self.peerConnectionFactory videoSource];
+    RTCVideoTrack *videoTrack = [self.peerConnectionFactory videoTrackWithSource:videoSource trackId:[self videoTrackId]];
+
+    return videoTrack;
 }
 
 - (BOOL)startLocalMedia
