@@ -178,6 +178,7 @@
 - (void)closeConnectionWithConnectionId:(NSString *)connectionId;
 
 - (BOOL)startLocalMedia;
+- (BOOL)startMedia;
 
 /**
  *  Terminates all media of active connections, removing the local stream.
