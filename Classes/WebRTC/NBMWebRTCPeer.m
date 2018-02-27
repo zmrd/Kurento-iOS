@@ -388,17 +388,9 @@ didReceiveMessageWithBuffer:(RTCDataBuffer *)buffer {
 {
     RTCMediaStream *localMediaStream = [_peerConnectionFactory mediaStreamWithStreamId:[self localStreamLabel]];
     self.localStream = localMediaStream;
-
-    //Audio setup
-    BOOL audioEnabled = NO;
-    AVAuthorizationStatus audioAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    if (audioAuthStatus == AVAuthorizationStatusAuthorized || audioAuthStatus == AVAuthorizationStatusNotDetermined) {
-        audioEnabled = YES;
-        [self setupLocalAudio];
-    }
     [self setupMedia];
 
-    return audioEnabled;
+    return true;
 }
 
 - (void)setupMedia
